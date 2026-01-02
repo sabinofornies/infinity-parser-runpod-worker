@@ -23,10 +23,8 @@ RUN pip install --no-cache-dir \
     pdf2image \
     Pillow
 
-# Download model weights at build time (faster cold starts)
-RUN python3 -c "from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor; \
-    Qwen2_5_VLForConditionalGeneration.from_pretrained('infly/Infinity-Parser-7B', torch_dtype='auto'); \
-    AutoProcessor.from_pretrained('infly/Infinity-Parser-7B')"
+# Model downloads at runtime (first cold start will be slower, but build succeeds)
+# Build server has limited RAM and can't load 7B model during build
 
 # Copy handler
 COPY handler.py /app/handler.py
