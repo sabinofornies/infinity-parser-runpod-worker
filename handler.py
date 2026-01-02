@@ -26,11 +26,11 @@ from pdf2image import convert_from_path
 MODEL_PATH = "infly/Infinity-Parser-7B"
 PROMPT = "Please transform the document's contents into Markdown format."
 
-# Load model with flash_attention_2 for better performance
+# Load model with SDPA (PyTorch native attention - no compilation needed)
 MODEL = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     MODEL_PATH,
     torch_dtype=torch.bfloat16,
-    attn_implementation="flash_attention_2",
+    attn_implementation="sdpa",  # Uses PyTorch's ScaledDotProductAttention
     device_map="auto",
 )
 

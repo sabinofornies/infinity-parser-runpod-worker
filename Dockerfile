@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python dependencies (no flash-attn to avoid 1h+ compile time)
 RUN pip install --no-cache-dir \
     runpod \
     transformers>=4.45.0 \
@@ -21,8 +21,7 @@ RUN pip install --no-cache-dir \
     torchvision \
     qwen-vl-utils \
     pdf2image \
-    Pillow \
-    flash-attn --no-build-isolation
+    Pillow
 
 # Download model weights at build time (faster cold starts)
 RUN python3 -c "from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor; \
