@@ -1,0 +1,10 @@
+# Infinity-Parser-7B dependencies
+runpod
+transformers>=4.45.0
+accelerate
+torch
+torchvision
+qwen-vl-utils
+pdf2image
+Pillow
+flash-attn
