@@ -14,11 +14,13 @@ import traceback
 from pathlib import Path
 
 import runpod
-from runpod.serverless.utils import rp_upload
-import runpod.serverless.modules.rp_logger as logger
+from runpod import RunPodLogger
+
+# Initialize logger
+log = RunPodLogger()
 
 # Initialize model once at startup
-logger.info("Loading Infinity-Parser-7B model...")
+log.info("Loading Infinity-Parser-7B model...")
 
 import torch
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
@@ -45,7 +47,7 @@ PROCESSOR = AutoProcessor.from_pretrained(
     max_pixels=max_pixels
 )
 
-logger.info("Infinity-Parser-7B loaded successfully!")
+log.info("Infinity-Parser-7B loaded successfully!")
 
 
 def process_image(image_path: str) -> str:
@@ -119,7 +121,7 @@ def handler(event):
                 "error": f"Invalid base64 encoding: {e}",
             }
 
-        logger.info(f"Processing: {file_name} ({len(file_bytes)} bytes)")
+        log.info(f"Processing: {file_name} ({len(file_bytes)} bytes)")
 
         # Save to temp file
         with tempfile.NamedTemporaryFile(suffix=file_ext, delete=False) as tmp:
@@ -132,14 +134,14 @@ def handler(event):
 
             if file_ext == ".pdf":
                 # Convert PDF to images
-                logger.info("Converting PDF to images...")
+                log.info("Converting PDF to images...")
                 images = convert_from_path(tmp_path, dpi=150)
                 page_count = len(images)
-                logger.info(f"PDF has {page_count} pages")
+                log.info(f"PDF has {page_count} pages")
 
                 # Process each page
                 for i, image in enumerate(images):
-                    logger.info(f"Processing page {i + 1}/{page_count}...")
+                    log.info(f"Processing page {i + 1}/{page_count}...")
 
                     # Save image temporarily
                     with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as img_tmp:
@@ -161,7 +163,7 @@ def handler(event):
             # Combine all pages
             markdown = "\n\n---\n\n".join(all_markdown)
 
-            logger.info(f"Completed: {file_name} - {len(markdown)} chars, {page_count} pages")
+            log.info(f"Completed: {file_name} - {len(markdown)} chars, {page_count} pages")
 
             return {
                 "success": True,
@@ -176,8 +178,8 @@ def handler(event):
 
     except Exception as e:
         error_msg = f"{type(e).__name__}: {str(e)}"
-        logger.error(f"Error: {error_msg}")
-        logger.error(traceback.format_exc())
+        log.error(f"Error: {error_msg}")
+        log.error(traceback.format_exc())
 
         return {
             "success": False,
