@@ -1,8 +1,8 @@
 # Infinity-Parser-7B RunPod Serverless Worker
 # Based on: https://huggingface.co/infly/Infinity-Parser-7B
 
-# Use smaller runtime image instead of 8GB devel image
-FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+# Use PyTorch 2.5 for compatibility with latest transformers
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
 
 WORKDIR /app
 
@@ -14,12 +14,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies (no flash-attn to avoid 1h+ compile time)
+# Pin transformers to 4.47.0 for compatibility with PyTorch 2.5
 RUN pip install --no-cache-dir \
     runpod \
-    transformers>=4.45.0 \
+    transformers==4.47.0 \
     accelerate \
-    torch \
-    torchvision \
     qwen-vl-utils \
     pdf2image \
     Pillow
