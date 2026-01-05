@@ -29,7 +29,7 @@ PROMPT = "Please transform the document's contents into Markdown format."
 # Load model with SDPA (PyTorch native attention - no compilation needed)
 MODEL = Qwen2_5_VLForConditionalGeneration.from_pretrained(
     MODEL_PATH,
-    torch_dtype=torch.bfloat16,
+    dtype=torch.bfloat16,  # Changed from torch_dtype (deprecated)
     attn_implementation="sdpa",  # Uses PyTorch's ScaledDotProductAttention
     device_map="auto",
 )
