@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies (no flash-attn to avoid 1h+ compile time)
-# Pin transformers to 4.47.0 for compatibility with PyTorch 2.5
+# Use transformers 4.49.0+ for Qwen2_5_VLForConditionalGeneration support
 RUN pip install --no-cache-dir \
     runpod \
-    transformers==4.47.0 \
+    transformers>=4.49.0 \
     accelerate \
     qwen-vl-utils \
     pdf2image \
